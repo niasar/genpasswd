@@ -43,6 +43,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/build$(Build.BuildId).tar.gz'
     ArtifactName: 'linux_build_gzipped'
     publishLocation: 'Container'
