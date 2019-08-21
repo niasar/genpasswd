@@ -38,7 +38,7 @@ steps:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
     includeRootFolder: true
     archiveType: 'tar'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/build$(Build.BuildId).tar.gz'
     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
