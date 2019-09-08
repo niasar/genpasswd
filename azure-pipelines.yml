@@ -30,6 +30,8 @@ steps:
         dep ensure
     fi
     go build -v .
+    rm -rf .git
+    find . -type f -not -name 'genpasswd' -print0 | xargs -0 rm --
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies, then build'
 
