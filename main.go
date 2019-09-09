@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"math"
 	"math/rand"
 	"os"
-	"strconv"
 
 	"github.com/howeyc/gopass"
 	"github.com/tredoe/osutil/user/crypt/sha512_crypt"
@@ -42,10 +40,16 @@ func getPass() []byte {
 }
 func getSalt() []byte {
 	var buffer bytes.Buffer
+	const randChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."
 	if len(os.Args) < 2 {
-		randsalt := strconv.Itoa(rand.Intn(math.MaxInt32))
+		randsalt := make([]byte, 16)
+		for i := range randsalt {
+			randsalt[i] = randChars[rand.Intn(len(randChars))]
+		}
 		buffer.WriteString("$6$")
-		buffer.WriteString(randsalt)
+		for i := range randsalt {
+			buffer.WriteByte(randsalt[i])
+		}
 	} else {
 		buffer.WriteString("$6$")
 		buffer.WriteString(os.Args[1])
