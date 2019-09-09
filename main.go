@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -12,7 +13,10 @@ import (
 )
 
 func main() {
-	if len(os.Args) >= 2 {
+	toStdout := flag.Bool("stdout", false, "Output to stdout instead of file")
+	filename := flag.String("filename", "passwd.hash", "Filename to write password hash")
+	flag.Parse()
+	if flag.NArg() != 0 {
 		checkSalt()
 	}
 	pwd := getPass()
@@ -20,9 +24,14 @@ func main() {
 	hasher := sha512_crypt.New()
 	hash, err := hasher.Generate(pwd, salt)
 	check(err)
-	err = ioutil.WriteFile("passwd.hash", []byte(hash), 0644)
-	check(err)
-	fmt.Println("Password hash saved to passwd.hash")
+	if *toStdout == true {
+		fmt.Println(hash)
+		os.Exit(0)
+	} else {
+		err = ioutil.WriteFile(*filename, []byte(hash), 0644)
+		check(err)
+		fmt.Println("Password hash saved to", *filename)
+	}
 }
 func getPass() []byte {
 	var pwd []byte
@@ -43,7 +52,7 @@ func getPass() []byte {
 func getSalt() []byte {
 	var buffer bytes.Buffer
 	const randChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."
-	if len(os.Args) < 2 {
+	if flag.NArg() == 0 {
 		randsalt := make([]byte, 16)
 		for i := range randsalt {
 			randsalt[i] = randChars[rand.Intn(len(randChars))]
@@ -54,7 +63,7 @@ func getSalt() []byte {
 		}
 	} else {
 		buffer.WriteString("$6$")
-		buffer.WriteString(os.Args[1])
+		buffer.WriteString(flag.Arg(0))
 	}
 	defer buffer.Reset()
 	return []byte(buffer.String())
