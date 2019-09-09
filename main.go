@@ -12,7 +12,9 @@ import (
 )
 
 func main() {
-
+	if len(os.Args) >= 2 {
+		checkSalt()
+	}
 	pwd := getPass()
 	salt := getSalt()
 	hasher := sha512_crypt.New()
@@ -57,6 +59,14 @@ func getSalt() []byte {
 	defer buffer.Reset()
 	return []byte(buffer.String())
 }
+
+func checkSalt() {
+	if len(os.Args[1]) < 8 || len(os.Args[1]) > 16 {
+		fmt.Println("Provided salt might be 8 to 16 characters")
+		os.Exit(10)
+	}
+}
+
 func check(e error) {
 	if e != nil {
 		panic(e)
