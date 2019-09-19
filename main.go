@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"time"
 
 	"github.com/howeyc/gopass"
 	"github.com/tredoe/osutil/user/crypt/sha512_crypt"
@@ -54,8 +55,10 @@ func getSalt() []byte {
 	const randChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."
 	if flag.NArg() == 0 {
 		randsalt := make([]byte, 16)
+		randSrc := rand.NewSource(time.Now().UnixNano())
+		randomizer := rand.New(randSrc)
 		for i := range randsalt {
-			randsalt[i] = randChars[rand.Intn(len(randChars))]
+			randsalt[i] = randChars[randomizer.Intn(len(randChars))]
 		}
 		buffer.WriteString("$6$")
 		for i := range randsalt {
