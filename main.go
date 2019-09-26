@@ -55,10 +55,9 @@ func getSalt() []byte {
 	const randChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789."
 	if flag.NArg() == 0 {
 		randsalt := make([]byte, 16)
-		randSrc := rand.NewSource(time.Now().UnixNano())
-		randomizer := rand.New(randSrc)
+		rand.Seed(time.Now().UnixNano())
 		for i := range randsalt {
-			randsalt[i] = randChars[randomizer.Intn(len(randChars))]
+			randsalt[i] = randChars[rand.Intn(len(randChars))]
 		}
 		buffer.WriteString("$6$")
 		for i := range randsalt {
